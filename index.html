@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassatOSINT - OSINT Global</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #000000;
+            --grid-color: rgba(255, 255, 255, 0.03);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent: #ffffff;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glow: rgba(255, 255, 255, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+		
+	/* Add to existing .logo-container styles or create new */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Increased from 15px */
+}
+
+.brand-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.brand-name {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.brand-tagline {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* Update existing .logo styles or add new */
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px; /* Changed from 50% to make it square with rounded edges */
+    padding: 3px;
+    box-shadow: 
+        0 0 10px var(--glow), 
+        0 0 20px var(--glow),
+        0 0 30px rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo:hover {
+    box-shadow: 
+        0 0 15px var(--glow), 
+        0 0 30px var(--glow),
+        0 0 45px rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 9px; /* Slightly less than container for inner border effect */
+    object-fit: cover;
+    filter: brightness(1.1) contrast(1.1);
+}
+
+/* Add glow animation for subtle effect */
+@keyframes subtleGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 10px var(--glow), 
+            0 0 20px var(--glow),
+            0 0 30px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        box-shadow: 
+            0 0 15px var(--glow), 
+            0 0 30px var(--glow),
+            0 0 40px rgba(255, 255, 255, 0.15);
+    }
+}
+
+.logo {
+    animation: subtleGlow 4s ease-in-out infinite;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .logo {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+    }
+    
+    .logo img {
+        border-radius: 7px;
+    }
+    
+    .brand-name {
+        font-size: 1.6rem;
+    }
+    
+    .brand-tagline {
+        font-size: 0.8rem;
+    }
+    
+    .logo-container {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-container {
+        gap: 12px;
+    }
+    
+    .brand-name {
+        font-size: 1.5rem;
+    }
+    
+    .brand-tagline {
+        display: none; /* Hide tagline on very small screens */
+    }
+}
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 0 10px var(--glow), 0 0 20px var(--glow);
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            box-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sections */
+        .section {
+            padding: 120px 5% 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* About */
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            margin-bottom: 40px;
+        }
+
+        .about-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .about-section p, .about-section ul {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .about-section ul {
+            padding-left: 20px;
+        }
+
+        .about-section li {
+            margin-bottom: 8px;
+        }
+
+/* India Special - Matching Other Sections */
+.india-special {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 40px;
+    margin-bottom: 60px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.india-special:hover {
+    border-color: var(--accent);
+}
+
+.india-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: var(--text-primary);
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.india-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background-color: var(--accent);
+}
+
+.india-flag {
+    font-size: 2rem;
+}
+
+.india-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.india-category {
+    background-color: rgba(30, 30, 30, 0.5);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.india-category:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
+
+.india-category h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.india-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.india-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition);
+    padding: 5px 0;
+    border-bottom: 1px solid transparent;
+}
+
+.india-link:hover {
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .india-special {
+        padding: 30px;
+    }
+    
+    .india-categories {
+        grid-template-columns: 1fr;
+    }
+    
+    .india-title {
+        font-size: 1.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .india-special {
+        padding: 25px 20px;
+    }
+    
+    .india-title {
+        font-size: 1.7rem;
+    }
+}
+        /* Tools */
+        .tools-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .tool-category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .tool-category:hover {
+            border-color: var(--accent);
+        }
+
+        .tool-header {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tool-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 15px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: rgba(30, 30, 30, 0.5);
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tool-item:hover {
+            border-color: var(--accent);
+            background-color: rgba(40, 40, 40, 0.7);
+        }
+
+        .tool-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            flex-grow: 1;
+        }
+
+        .tool-link:hover {
+            color: var(--accent);
+        }
+
+        .tip-icon {
+            position: relative;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: help;
+            margin-left: 10px;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .tip-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .tip-icon:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: var(--text-primary);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            width: 300px;
+            font-size: 14px;
+            z-index: 100;
+            transition: opacity 0.3s;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            line-height: 1.4;
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        /* Contacts */
+        .contacts {
+            text-align: center;
+            padding: 80px 5%;
+        }
+
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+        }
+
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            box-shadow: 0 0 10px var(--glow);
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-icon:hover {
+            box-shadow: 0 0 20px var(--glow), 0 0 30px var(--glow);
+            transform: translateY(-5px);
+        }
+
+        .contact-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .author-credit {
+            margin-top: 50px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .author-credit span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 5%;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .tool-list {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .india-categories {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 20px;
+                gap: 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                border-bottom: 1px solid var(--border-color);
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                padding: 15px 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .nav-link:last-child {
+                border-bottom: none;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+                padding: 0 20px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .tool-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .india-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-icons {
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 100px 20px 60px;
+            }
+            
+            .india-special, .tool-category {
+                padding: 20px;
+            }
+            
+            .contact-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Grid overlay -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+<div class="logo-container">
+    <div class="logo">
+        <img src="https://i.ibb.co/yjNRV0k/wmremove-transformed-1.png" alt="PassatOSINT Logo">
+    </div>
+    <div class="brand-container">
+        <div class="brand-name">PassatOSINT</div>
+        <div class="brand-tagline">OSINT Intelligence Platform</div>
+    </div>
+</div>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#india" class="nav-link">India Special</a>
+            <a href="#tools" class="nav-link">Tools</a>
+            <a href="#contacts" class="nav-link">Contacts</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="section hero">
+        <h1 class="hero-title">PassatOSINT</h1>
+        <p class="hero-subtitle">Global Open Source Intelligence Platform for Researchers, Analysts & Investigators</p>
+        <p class="hero-subtitle" style="font-size: 1.2rem; margin-top: -20px;">By Sutanu (@zeff.xd)</p>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="section">
+        <h2 class="section-title">About This Website</h2>
+        
+        <div class="about-content">
+            <div class="about-section">
+                <h3>About PassatOSINT</h3>
+                <p>PassatOSINT is an open-source intelligence (OSINT) platform designed to help researchers, analysts, and investigators efficiently explore publicly available data.</p>
+                <p>Our goal is simple: turn fragmented public information into structured, actionable insight. PassatOSINT provides a centralized interface to query, correlate, and analyze data from open and lawful sources, enabling faster investigations and clearer understanding.</p>
+                <p>Built with a focus on accuracy, performance, and usability, PassatOSINT is suited for:</p>
+                <ul>
+                    <li>OSINT researchers</li>
+                    <li>Cybersecurity professionals</li>
+                    <li>Journalists and analysts</li>
+                    <li>Digital investigators</li>
+                    <li>Threat intelligence teams</li>
+                </ul>
+            </div>
+            
+            <div class="about-section">
+                <h3>What We Do</h3>
+                <p>PassatOSINT helps users:</p>
+                <ul>
+                    <li>Search and organize open-source data</li>
+                    <li>Identify patterns and connections across datasets</li>
+                    <li>Reduce manual research time</li>
+                    <li>Maintain a structured investigation workflow</li>
+                </ul>
+                <p>The platform emphasizes clarity over noise and avoids unnecessary complexity, allowing users to focus on analysis rather than tooling.</p>
+            </div>
+            
+            <div class="about-section">
+                <h3>Ethics & Responsibility</h3>
+                <p>PassatOSINT operates strictly within the boundaries of publicly accessible information.</p>
+                <p>We do not host private databases, breach content, or restricted records.</p>
+                <p>Users are responsible for ensuring that their use of PassatOSINT complies with applicable laws, regulations, and ethical guidelines. The platform is intended for legitimate research and investigative purposes only.</p>
+            </div>
+            
+            <div class="about-section">
+                <h3>Design Philosophy</h3>
+                <ul>
+                    <li>Clean dark interface</li>
+                    <li>Subtle technical grid layout</li>
+                    <li>Distraction-free workflows</li>
+                </ul>
+            </div>
+            
+            <div class="about-section">
+                <h3>Our Mission</h3>
+                <p>To empower responsible intelligence gathering by providing tools that are:</p>
+                <ul>
+                    <li>Transparent</li>
+                    <li>Efficient</li>
+                    <li>Professional</li>
+                    <li>Research-driven</li>
+                </ul>
+                <p>PassatOSINT exists to support informed decision-making, not speculation or misuse.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- India Special Section -->
+    <section id="india" class="section">
+        <h2 class="section-title">Sutanu's India Special</h2>
+        
+        <div class="india-special">
+            <div class="india-title">
+                <span class="india-flag">????</span>
+                <span>Sutanu's India Special ????</span>
+            </div>
+            
+            <div class="india-categories">
+                <div class="india-category">
+                    <h4>Open Data Portals</h4>
+                    <div class="india-links">
+                        <a href="https://data.gov.in" target="_blank" class="india-link">data.gov.in</a>
+                        <a href="https://data.gov.in/resources" target="_blank" class="india-link">data.gov.in/resources</a>
+                    </div>
+                </div>
+				
+				<div class="india-category">
+    <h4>Breached DB</h4>
+    <div class="india-links">
+        <a href="https://t.me/Itzdhruvnuminfonew_bot" target="_blank" class="india-link">Phone Info</a>
+        <a href="https://t.me/passatosintbyzeffbot" target="_blank" class="india-link">Breached Data</a>
+        <a href="https://haveibeenpwned.com/" target="_blank" class="india-link">Breach Lookup</a>
+        <a href="https://t.me/TrueCalleRobot" target="_blank" class="india-link">TrueCaller?</a>
+    </div>
+</div>
+
+
+                
+                <div class="india-category">
+                    <h4>Courts</h4>
+                    <div class="india-links">
+                        <a href="https://main.sci.gov.in" target="_blank" class="india-link">Supreme Court of India</a>
+                        <a href="https://ecourts.gov.in" target="_blank" class="india-link">eCourts Services</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Criminal Records</h4>
+                    <div class="india-links">
+                        <a href="https://cctns.gov.in" target="_blank" class="india-link">CCTNS (Crime Tracking)</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Stock</h4>
+                    <div class="india-links">
+                        <a href="https://nseindia.com" target="_blank" class="india-link">National Stock Exchange</a>
+                        <a href="https://bseindia.com" target="_blank" class="india-link">Bombay Stock Exchange</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Legal Entities</h4>
+                    <div class="india-links">
+                        <a href="https://www.mca.gov.in" target="_blank" class="india-link">Ministry of Corporate Affairs</a>
+                        <a href="https://www.llpin.gov.in" target="_blank" class="india-link">LLP Registration</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Maps</h4>
+                    <div class="india-links">
+                        <a href="https://bhuvan.nrsc.gov.in" target="_blank" class="india-link">Bhuvan - ISRO's Geoportal</a>
+                        <a href="https://surveyofindia.gov.in" target="_blank" class="india-link">Survey of India</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Vehicles & Transport</h4>
+                    <div class="india-links">
+                        <a href="https://parivahan.gov.in" target="_blank" class="india-link">Parivahan (Vehicle Services)</a>
+                        <a href="https://morth.nic.in" target="_blank" class="india-link">Ministry of Road Transport</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Aviation & Maritime</h4>
+                    <div class="india-links">
+                        <a href="https://dgca.gov.in" target="_blank" class="india-link">Directorate General of Civil Aviation</a>
+                        <a href="https://dgh.gov.in" target="_blank" class="india-link">Directorate General of Hydrocarbons</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>People Search</h4>
+                    <div class="india-links">
+                        <a href="https://electoralsearch.in" target="_blank" class="india-link">Electoral Search</a>
+                        <a href="https://uidai.gov.in" target="_blank" class="india-link">Aadhaar Services (UIDAI)</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>Public Procurement</h4>
+                    <div class="india-links">
+                        <a href="https://eprocure.gov.in" target="_blank" class="india-link">Central Public Procurement Portal</a>
+                        <a href="https://tenders.gov.in" target="_blank" class="india-link">eProcurement System</a>
+                    </div>
+                </div>
+                
+                <div class="india-category">
+                    <h4>WHOIS (Registry IN)</h4>
+                    <div class="india-links">
+                        <a href="https://registry.in" target="_blank" class="india-link">.IN Registry</a>
+                        <a href="https://whois.registry.in" target="_blank" class="india-link">.IN WHOIS Search</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- OSINT Tools Section -->
+    <section id="tools" class="section">
+        <h2 class="section-title">OSINT Tools</h2>
+        
+        <div class="tools-container">
+            <!-- Username Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Username Search</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://sylva.pfeister.dev/" target="_blank" class="tool-link">Sylva Identity Discovery (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Powerful username search across multiple platforms.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/sherlock-project/sherlock" target="_blank" class="tool-link">Sherlock (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Command-line tool to find usernames across social networks.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://whatsmyname.app/" target="_blank" class="tool-link">WhatsMyName</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://namechk.com/" target="_blank" class="tool-link">Namechk</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://usersearch.org/" target="_blank" class="tool-link">UserSearch.org</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/WebBreacher/WhatsMyName" target="_blank" class="tool-link">WhatsMyName (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Python tool to find usernames across many websites.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://thatsthem.com/" target="_blank" class="tool-link">Thats Them</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://namecheckup.com/" target="_blank" class="tool-link">NameCheckup</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://instantusername.com/" target="_blank" class="tool-link">Instant Username Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.idcrawl.com/username" target="_blank" class="tool-link">IDCrawl Username Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://namesdir.com/" target="_blank" class="tool-link">Names Directory</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Email Search</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://sylva.pfeister.dev/" target="_blank" class="tool-link">Sylva Identity Discovery (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Advanced email discovery and verification tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://thatsthem.com/reverse-email-lookup" target="_blank" class="tool-link">ThatsThem</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://hunter.io/" target="_blank" class="tool-link">Hunter</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.melissadata.com/lookups/emails.asp" target="_blank" class="tool-link">Email to Address (R)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Requires registration for full access.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.voilanorbert.com/" target="_blank" class="tool-link">VoilaNorbert</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/mxrch/GHunt" target="_blank" class="tool-link">GHunt (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Investigate Google accounts and emails.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://osint.industries/" target="_blank" class="tool-link">OSINT Industries</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/laramies/theHarvester" target="_blank" class="tool-link">theHarvester (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Gather emails, subdomains, hosts, employee names, etc.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/m4ll0k/infoga" target="_blank" class="tool-link">Infoga (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Email information gathering tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.skymem.info/" target="_blank" class="tool-link">Skymem</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://epieos.com/" target="_blank" class="tool-link">Epieos</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.email-format.com/" target="_blank" class="tool-link">Email Format</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://metricsparrow.com/toolkit/email-permutator/" target="_blank" class="tool-link">Email Permutator</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Domain Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Domain & DNS</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="http://centralops.net/co/DomainDossier.aspx" target="_blank" class="tool-link">Domain Dossier</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.domainiq.com/" target="_blank" class="tool-link">domainIQ</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://whois.domaintools.com/" target="_blank" class="tool-link">DomainTools Whois</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://domainbigdata.com/" target="_blank" class="tool-link">Domain Big Data</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://whoisology.com/#advanced" target="_blank" class="tool-link">Whoisology</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://whois.arin.net/ui/advanced.jsp" target="_blank" class="tool-link">Whois ARIN</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://tools.dnsstuff.com/" target="_blank" class="tool-link">DNSstuff</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.robtex.com/" target="_blank" class="tool-link">Robtex (R)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Requires registration for some features.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.domaincrawler.com/" target="_blank" class="tool-link">Domaincrawler.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://domains.markmonitor.com/whois/" target="_blank" class="tool-link">MarkMonitor Whois Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.easywhois.com/" target="_blank" class="tool-link">easyWhois</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://website.informer.com/" target="_blank" class="tool-link">Website Informer</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://who.is/" target="_blank" class="tool-link">Who.is</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- IP & Network Tools -->
+            <div class="tool-category">
+                <div class="tool-header">IP & Network Intelligence</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://www.maxmind.com/en/home" target="_blank" class="tool-link">MaxMind Demo</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://ipverse.net/" target="_blank" class="tool-link">IPv4/IPv6 lists by country code</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.ip2location.com/demo" target="_blank" class="tool-link">IP2Location.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.ipfingerprints.com/" target="_blank" class="tool-link">IP Fingerprints</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://db-ip.com/" target="_blank" class="tool-link">DB-IP</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.iplocation.net/" target="_blank" class="tool-link">IP Location Finder</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.infosniper.net/" target="_blank" class="tool-link">Info Sniper</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://en.utrace.de/" target="_blank" class="tool-link">utrace</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.infobyip.com/" target="_blank" class="tool-link">InfobyIP.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.iptrackeronline.com/" target="_blank" class="tool-link">ipTRACKERonline</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.ipaddress.my/" target="_blank" class="tool-link">My IP Address</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://urlscan.io/search/#*" target="_blank" class="tool-link">urlscan.io</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://spyse.com/search/ip" target="_blank" class="tool-link">Spyse</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Social Media Intelligence</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://www.facebook.com/public?query=email@gmail.com&nomc=0" target="_blank" class="tool-link">FB Email Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.facebook.com/login/identify?ctx=recover" target="_blank" class="tool-link">Recover FB Account</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.facebook.com/photo.php?fbid=PHOTO-ID-HERE" target="_blank" class="tool-link">Facebook Photos by ID (M)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Replace PHOTO-ID-HERE with actual Facebook photo ID.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://lookup-id.com/" target="_blank" class="tool-link">FB Lookup ID</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.facebook.com/login/identify" target="_blank" class="tool-link">FB Identify (Requires Logout)</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://inflact.com/profiles/instagram-viewer/" target="_blank" class="tool-link">Inflact Instagram Viewer (Anonymous)</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/Datalux/Osintgram" target="_blank" class="tool-link">Osintgram (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Instagram OSINT tool for gathering information.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://twitter.com/search-advanced" target="_blank" class="tool-link">Twitter Advanced Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://twitter.com/search?q=geocode%3A36.1143855%2C-115.1727518%2C1km&src=typd" target="_blank" class="tool-link">Twitter Location Search</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Modify coordinates for different locations.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image & Video Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Image & Video Analysis</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://images.google.com/?gws_rd=ssl" target="_blank" class="tool-link">Google Images</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.bing.com/images" target="_blank" class="tool-link">Bing Images</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://images.yahoo.com/" target="_blank" class="tool-link">Yahoo Image Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://tineye.com/" target="_blank" class="tool-link">TinEye Reverse Image Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://pimeyes.com/en" target="_blank" class="tool-link">PimEyes Face Search Engine</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.yandex.com/images/" target="_blank" class="tool-link">Yandex Images</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://shitu.baidu.com/" target="_blank" class="tool-link">Baidu Images</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/" target="_blank" class="tool-link">ExifTool (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Powerful metadata reading and writing tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://exifeditor.io" target="_blank" class="tool-link">ExifEditor</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://exif.regex.info/" target="_blank" class="tool-link">Jeffrey's Exif Viewer</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.exifviewer.org/" target="_blank" class="tool-link">ExifViewer</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.exif-search.com/" target="_blank" class="tool-link">Search by Exif</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- People Search -->
+            <div class="tool-category">
+                <div class="tool-header">People Search Engines</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="http://www.familytreenow.com/" target="_blank" class="tool-link">Family Tree Now</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://infoflow.cloud/" target="_blank" class="tool-link">InfoFlow Public People Search In Chilean</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://thatsthem.com/name-address-search" target="_blank" class="tool-link">ThatsThem</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.zoominfo.com/people_directory/professional_profile/A-0-1" target="_blank" class="tool-link">ZoomInfo Directory</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.zabasearch.com/" target="_blank" class="tool-link">Zaba Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.ussearch.com/" target="_blank" class="tool-link">USSearch.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.melissadata.com/lookups/peoplefinder.asp" target="_blank" class="tool-link">Melissa Data - People Finder (R)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Requires registration for full access.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.advancedbackgroundchecks.com/" target="_blank" class="tool-link">Advanced Background Checks</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.salesmaple.com/contacts/#!/" target="_blank" class="tool-link">SalesMaple Contact Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.peekyou.com/" target="_blank" class="tool-link">PeekYou</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phone & Communication -->
+            <div class="tool-category">
+                <div class="tool-header">Phone & Communication</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://www.slydial.com/" target="_blank" class="tool-link">Slydial</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.numberingplans.com/?page=analysis&sub=phonenr" target="_blank" class="tool-link">Numbering Plans</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.numberway.com/" target="_blank" class="tool-link">Numberway</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://whocalld.com/" target="_blank" class="tool-link">WhoCalld</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.411.com/reverse_phone" target="_blank" class="tool-link">411</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.calleridtest.com/" target="_blank" class="tool-link">CallerID Test</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://thatsthem.com/reverse-phone-lookup" target="_blank" class="tool-link">ThatsThem - Reverse Phone Lookup</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.twilio.com/lookup" target="_blank" class="tool-link">Twilio Lookup</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.fonefinder.net/" target="_blank" class="tool-link">Fone Finder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Public Records -->
+            <div class="tool-category">
+                <div class="tool-header">Public Records</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="http://www.melissadata.com/lookups/propertyviewer.asp" target="_blank" class="tool-link">Melissa Data - Property Viewer (R)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Requires registration for full access.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://app.regrid.com/us/" target="_blank" class="tool-link">Regrid (US Only)</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.zillow.com/" target="_blank" class="tool-link">Zillow</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.emporis.com/" target="_blank" class="tool-link">Emporis</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.homefacts.com/" target="_blank" class="tool-link">Homefacts</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://neighbor.report/" target="_blank" class="tool-link">Neighbor Report</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.redfin.com/" target="_blank" class="tool-link">Redfin</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.blackbookonline.info/USA-County-Court-Records.aspx" target="_blank" class="tool-link">Nationwide County Court Records</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Maps & Geolocation -->
+            <div class="tool-category">
+                <div class="tool-header">Maps & Geolocation</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://nova.astrometry.net/" target="_blank" class="tool-link">Astrometry</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://suncalc.net/" target="_blank" class="tool-link">SunCalc</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.gpsvisualizer.com/geocode" target="_blank" class="tool-link">GPSVisualizer</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://batchgeo.com/" target="_blank" class="tool-link">BatchGeo</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.google.com/maps/" target="_blank" class="tool-link">Google Maps</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.bing.com/maps/" target="_blank" class="tool-link">Bing Maps</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://maps.here.com/" target="_blank" class="tool-link">HERE Maps</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://data.mashedworld.com/dualmaps/map.htm" target="_blank" class="tool-link">Dual Maps</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.instantstreetview.com/" target="_blank" class="tool-link">Instant Google Street View</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://wikimapia.org/#lang=en&lat=40.078071&lon=-100.458984&z=5&m=b" target="_blank" class="tool-link">Wikimapia</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.openstreetmap.org/#map=5/40.614/-100.679" target="_blank" class="tool-link">OpenStreetMap</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Engines -->
+            <div class="tool-category">
+                <div class="tool-header">Search Engines</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://www.google.com/?gws_rd=ssl" target="_blank" class="tool-link">Google</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.bing.com/" target="_blank" class="tool-link">Bing</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://duckduckgo.com/" target="_blank" class="tool-link">DuckDuckGo</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://search.yahoo.com/web/advanced" target="_blank" class="tool-link">Yahoo Advanced Web Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.startpage.com/" target="_blank" class="tool-link">StartPage</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.yandex.com/" target="_blank" class="tool-link">Yandex</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.baidu.com/" target="_blank" class="tool-link">Baidu</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.google.com/advanced_search" target="_blank" class="tool-link">Google Advanced Search</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://shuriken.pm" target="_blank" class="tool-link">Shuriken</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://iseek.com/iseek/home.page" target="_blank" class="tool-link">iSEEK</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Archives -->
+            <div class="tool-category">
+                <div class="tool-header">Archives & Web History</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://archive.org/web/" target="_blank" class="tool-link">Internet Archive: Wayback Machine</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://archive.is/" target="_blank" class="tool-link">Archive.is</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://webcitation.org/query" target="_blank" class="tool-link">WebCite</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://cachedview.com/" target="_blank" class="tool-link">Cached View</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.cachedpages.com/" target="_blank" class="tool-link">Cached Pages</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://textfiles.com/" target="_blank" class="tool-link">Textfiles.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.webarchive.org.uk/ukwa/" target="_blank" class="tool-link">UK Web Archive</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.screenshots.com/" target="_blank" class="tool-link">Screenshots.com</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://web-beta.archive.org/#/" target="_blank" class="tool-link">Wayback Machine - Beta Search</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dark Web -->
+            <div class="tool-category">
+                <div class="tool-header">Dark Web & Onion</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://www.reddit.com/r/deepweb" target="_blank" class="tool-link">Reddit Deep Web</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.reddit.com/r/onions" target="_blank" class="tool-link">Reddit Onions</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.reddit.com/r/darknet" target="_blank" class="tool-link">Reddit Darknet</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.torproject.org/download/download-easy.html.en" target="_blank" class="tool-link">Tor Download (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Official Tor browser for anonymous browsing.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://freenetproject.org/pages/download.html" target="_blank" class="tool-link">Freenet Project (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Decentralized, censorship-resistant network.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://geti2p.net/en/" target="_blank" class="tool-link">I2P Anonymous Network (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Anonymous overlay network.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/s-rah/onionscan" target="_blank" class="tool-link">OnionScan</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/DedSecInside/TorBot" target="_blank" class="tool-link">TorBot</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Tools -->
+            <div class="tool-category">
+                <div class="tool-header">Additional OSINT Tools</div>
+                <div class="tool-list">
+                    <div class="tool-item">
+                        <a href="https://github.com/datasploit/datasploit/" target="_blank" class="tool-link">DataSploit (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: OSINT automation framework.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="http://www.spiderfoot.net/" target="_blank" class="tool-link">SpiderFoot (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Reconnaissance automation tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.threatpipes.com" target="_blank" class="tool-link">ThreatPipes (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Threat intelligence pipeline.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/InQuest/omnibus" target="_blank" class="tool-link">Omnibus (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: OSINT data collection tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/s0md3v/Photon" target="_blank" class="tool-link">Photon (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Crawler designed for OSINT.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://github.com/s0md3v/ReconDog" target="_blank" class="tool-link">ReconDog (T)</a>
+                        <div class="tip-icon">?
+                            <span class="tooltip-text">TIP: Reconnaissance tool.</span>
+                        </div>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://ifttt.com/" target="_blank" class="tool-link">IFTTT</a>
+                    </div>
+					  <div class="tool-item">
+                        <a href="https://doxbin.com/" target="_blank" class="D0xB1n">D0xB1n</a>
+                    </div>
+                    <div class="tool-item">
+                        <a href="https://www.stringify.com/" target="_blank" class="tool-link">Stringify</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contacts Section -->
+    <section id="contacts" class="section contacts">
+        <h2 class="section-title">Contacts</h2>
+        
+        <div class="contact-icons">
+            <div class="contact-item">
+                <a href="https://youtube.com/@HUNTERXRANDOM" target="_blank" class="contact-icon">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <span class="contact-label">YouTube: HUNTERXRANDOM</span>
+            </div>
+            
+            <div class="contact-item">
+                <a href="https://instagram.com/zeff.xd" target="_blank" class="contact-icon">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <span class="contact-label">Instagram: @zeff.xd</span>
+            </div>
+            
+            <div class="contact-item">
+                <a href="https://github.com/PapajiSutanu" target="_blank" class="contact-icon">
+                    <i class="fab fa-github"></i>
+                </a>
+                <span class="contact-label">GitHub: PapajiSutanu</span>
+            </div>
+            
+            <div class="contact-item">
+                <a href="mailto:sutanumitra42@gmail.com" class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <span class="contact-label">Gmail: sutanumitra42@gmail.com</span>
+            </div>
+        </div>
+        
+        <div class="author-credit">
+            <p>Created by <span>Sutanu</span> (@zeff.xd)</p>
+            <p>PassatOSINT - OSINT Intelligence Platform</p>
+        </div>
+    </section>
+    
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 PassatOSINT. All tools listed are publicly available resources.</p>
+        <p>Use responsibly and in accordance with applicable laws and regulations.</p>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight active section in navigation
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if(scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
